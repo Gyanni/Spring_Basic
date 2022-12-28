@@ -2,10 +2,10 @@ package com.fastcampus.ch3.diCopy4;
 
 import com.google.common.reflect.ClassPath;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import javax.annotation.Resource;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
@@ -13,8 +13,8 @@ import java.util.Set;
 
 @Component class Car {
 
-    @Resource Engine engine;
-    @Resource Door door;
+    @Autowired Engine engine;
+    @Autowired Door door;
 
     @Override
     public String toString() {
@@ -38,7 +38,6 @@ class AppContext {
         map = new HashMap();
         doComponentScan();
         doAutowired();
-        doResource();
     }
 
     private void doAutowired() {
@@ -50,22 +49,6 @@ class AppContext {
                 for (Field fld : bean.getClass().getDeclaredFields()) {
                     if (fld.getAnnotation(Autowired.class) != null) // byType
                         fld.set(bean, getBean(fld.getType())); // car.engine = obj;
-                }
-            }
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void doResource() {
-        // map에 저장된 객체의 iv 중에 @REsource가 붙어있으면
-        // map에서 iv의 Name에 맞는 객체를 찾아서 연결한다.(객체의 주소를 iv에 저장한다.)
-
-        try {
-            for (Object bean : map.values()) {
-                for (Field fld : bean.getClass().getDeclaredFields()) {
-                    if (fld.getAnnotation(Resource.class) != null) // byName
-                        fld.set(bean, getBean(fld.getName())); // car.engine = obj;
                 }
             }
         } catch (IllegalAccessException e) {
