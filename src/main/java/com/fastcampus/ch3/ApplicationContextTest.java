@@ -19,10 +19,22 @@ class Door {}
 
 @Component
 class Car {
-    @Value("red") String color;
-    @Value("100") int oil;
-    @Autowired    Engine engine;
-    @Autowired    Door[] doors;
+    String color;
+    int oil;
+//    @Autowired
+    Engine engine;
+//    @Autowired
+    Door[] doors;
+
+    public Car() {}
+
+    @Autowired // spring container에서 타입으로 빈을 검색하고 참조 변수에 자동으로 값을 주입한다.
+    public Car(@Value("red")String color, @Value("100")int oil, Engine engine, Door[] doors) {
+        this.color = color;
+        this.oil = oil;
+        this.engine = engine;
+        this.doors = doors;
+    }
 
     @Override
     public String toString() {
@@ -37,7 +49,7 @@ class Car {
 
 public class ApplicationContextTest {
     public static void main(String[] args) {
-        ApplicationContext ac = new GenericXmlApplicationContext("config.xml");
+        ApplicationContext ac = new ClassPathXmlApplicationContext("config.xml");
 //      Car car = ac.getBean("car", Car.class); // 타입을 지정하면 형변환 안해도됨. 아래의 문장과 동일
         Car car  = (Car) ac.getBean("car"); // 이름으로 빈 검색
         Car car2 = (Car) ac.getBean(Car.class);   // 타입으로 빈 검색
